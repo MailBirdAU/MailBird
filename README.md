@@ -1,4 +1,4 @@
 MailBird
 ========
 
-A Auburn University EE Senior Design Project
+An Auburn University EE Senior Design Project
