@@ -1,0 +1,4 @@
+mailbird.wordpress.com
+
+uname: mailbird
+pword: mailbird+thecurrentyear
