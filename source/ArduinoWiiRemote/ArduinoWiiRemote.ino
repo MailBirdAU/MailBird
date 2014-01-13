@@ -2,7 +2,7 @@
 // modified output for Wii-BlobTrack program by RobotFreak
 
 #include <Wire.h>
-
+//TEST
 int IRsensorAddress = 0xB0;
 int slaveAddress;
 int ledPin = 13;
