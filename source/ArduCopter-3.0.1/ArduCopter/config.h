@@ -742,23 +742,6 @@
  # define OF_LOITER_NAV             NAV_NONE
 #endif
 
-// IR_LAND Mode
-#ifndef LOITER_YAW
- # define LOITER_YAW                YAW_HOLD
-#endif
-
-#ifndef LOITER_RP
- # define LOITER_RP                 ROLL_PITCH_LOITER
-#endif
-
-#ifndef LOITER_THR
- # define LOITER_THR                THROTTLE_HOLD
-#endif
-
-#ifndef LOITER_NAV
- # define LOITER_NAV                NAV_LOITER
-#endif
-
 //////////////////////////////////////////////////////////////////////////////
 // Attitude Control
 //

@@ -20,11 +20,11 @@
 #define YAW_LOOK_AT_NEXT_WP             2       // point towards next waypoint (no pilot input accepted)
 #define YAW_LOOK_AT_LOCATION            3       // point towards a location held in yaw_look_at_WP (no pilot input accepted)
 #define YAW_CIRCLE                      4       // point towards a location held in yaw_look_at_WP (no pilot input accepted)
-#define YAW_LOOK_AT_HOME    		5       // point towards home (no pilot input accepted)
-#define YAW_LOOK_AT_HEADING    		6       // point towards a particular angle (not pilot input accepted)
-#define YAW_LOOK_AHEAD		        7	// WARNING!  CODE IN DEVELOPMENT NOT PROVEN
+#define YAW_LOOK_AT_HOME    		    5       // point towards home (no pilot input accepted)
+#define YAW_LOOK_AT_HEADING    		    6       // point towards a particular angle (not pilot input accepted)
+#define YAW_LOOK_AHEAD					7		// WARNING!  CODE IN DEVELOPMENT NOT PROVEN
 #define YAW_TOY                         8       // THOR This is the Yaw mode
-#define YAW_RESETTOARMEDYAW		9       // point towards heading at time motors were armed
+#define YAW_RESETTOARMEDYAW				9       // point towards heading at time motors were armed
 
 #define ROLL_PITCH_STABLE           0       // pilot input roll, pitch angles
 #define ROLL_PITCH_ACRO             1       // pilot inputs roll, pitch rotation rates
@@ -133,8 +133,7 @@
                                         // sensor
 #define TOY_A 11                        // THOR Enum for Toy mode
 #define TOY_M 12                        // THOR Enum for Toy mode
-#define IR_LAND 13                      // AUTO control
-#define NUM_MODES 14                      
+#define NUM_MODES 13
 
 // CH_6 Tuning
 // -----------

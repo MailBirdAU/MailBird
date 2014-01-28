@@ -321,7 +321,6 @@ static bool mode_requires_GPS(uint8_t mode) {
         case RTL:
         case CIRCLE:
         case POSITION:
-        case IR_LAND:
             return true;
         default:
             return false;
@@ -458,15 +457,6 @@ static void set_mode(uint8_t mode)
         set_roll_pitch_mode(OF_LOITER_RP);
         set_throttle_mode(OF_LOITER_THR);
         set_nav_mode(OF_LOITER_NAV);
-        break;
-        
-    case IR_LAND:
-    	ap.manual_throttle = false;
-    	ap.manual_attitude = false;
-        set_yaw_mode(LOITER_YAW);
-        set_roll_pitch_mode(LOITER_RP);
-        set_throttle_mode(LOITER_THR);
-        set_nav_mode(LOITER_NAV);
         break;
 
     // THOR
@@ -646,9 +636,6 @@ print_flight_mode(AP_HAL::BetterStream *port, uint8_t mode)
         break;
     case TOY_A:
         port->print_P(PSTR("TOY_A"));
-        break;
-    case IR_LAND:
-        port->print_P(PSTR("IR_LAND"));
         break;
     default:
         port->printf_P(PSTR("Mode(%u)"), (unsigned)mode);
