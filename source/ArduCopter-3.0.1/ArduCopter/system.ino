@@ -321,7 +321,6 @@ static bool mode_requires_GPS(uint8_t mode) {
         case RTL:
         case CIRCLE:
         case POSITION:
-        case IR_LAND:
             return true;
         default:
             return false;

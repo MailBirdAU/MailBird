@@ -1591,6 +1591,8 @@ bool set_roll_pitch_mode(uint8_t new_roll_pitch_mode)
                 roll_pitch_initialised = true;
             }
             break;
+        //case ROLL_PITCH_IR_LAND
+            // require ir led
     }
 
     // if initialisation has been successful update the yaw mode
