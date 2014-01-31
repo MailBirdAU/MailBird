@@ -142,6 +142,9 @@ public:
 
     /// get_waypoint_acceleration - returns acceleration in cm/s/s during missions
     float get_waypoint_acceleration() const { return _wp_accel_cms.get(); }
+    
+    /// set_ir_enabled - sets IR flag for IR position control instead of GPS control
+    void set_ir_enabled(bool IRflag) { ir_enabled = IRflag; };
 
     static const struct AP_Param::GroupInfo var_info[];
 
@@ -230,6 +233,7 @@ protected:
     float       _track_accel;           // acceleration along track
     float       _track_speed;           // speed in cm/s along track
     float       _track_leash_length;    // leash length along track
+    bool        ir_enabled;             // IR module flag used to switch between IR and GPS position control
 
 public:
     // for logging purposes

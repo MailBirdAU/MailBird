@@ -97,7 +97,8 @@ AC_WPNav::AC_WPNav(AP_InertialNav* inav, AP_AHRS* ahrs, APM_PI* pid_pos_lat, APM
     _track_leash_length(0),
     dist_error(0,0),
     desired_vel(0,0),
-    desired_accel(0,0)
+    desired_accel(0,0),
+    ir_enabled(0)
 {
     AP_Param::setup_object_defaults(this, var_info);
 
@@ -526,8 +527,13 @@ void AC_WPNav::get_loiter_position_to_velocity(float dt, float max_speed_cms)
         desired_vel.y = 0.0;
     }else{
         // calculate distance error
-        dist_error.x = _target.x - curr.x;
-        dist_error.y = _target.y - curr.y;
+    	if(ir_enabled){
+           //dist_error.x = camera_error_x;
+           //dist_error.y = camera_error_y;
+    	}else{
+    		dist_error.x = _target.x - curr.x;
+    		dist_error.y = _target.y - curr.y;
+    	}
 
         linear_distance = _wp_accel_cms/(2.0f*kP*kP);
 
@@ -715,29 +721,12 @@ void AC_WPNav::calculate_wp_leash_length(bool climb)
         _track_speed = min(speed_vert/pos_delta_unit_z, _wp_speed_cms/pos_delta_unit_xy);
         _track_leash_length = min(_wp_leash_z/pos_delta_unit_z, _wp_leash_xy/pos_delta_unit_xy);
     }
+}
+
+#if 0
     //////////////////////////////////////////////////////////////////////////////
     ///         Copy and Paste of Loiter position controller
     //////////////////////////////////////////////////////////////////////////////
-    
-    /// update_wpnav - run the wp controller - should be called at 10hz
-    void AC_WPNav::update_wpnav()
-    {
-        uint32_t now = hal.scheduler->millis();
-        float dt = (now - _wpnav_last_update) / 1000.0f;
-        _wpnav_last_update = now;
-
-        // catch if we've just been started
-        if( dt >= 1.0 ) {
-            dt = 0.0;
-            reset_I();
-        }else{
-            // advance the target if necessary
-            advance_target_along_track(dt);
-        }
-
-        // run loiter position controller
-        get_ir_position_to_velocity(dt, _wp_speed_cms);
-    }
     
     /// get_ir_position_to_velocity - ir position controller
     ///     converts desired position held in _target vector to desired velocity 
@@ -784,7 +773,6 @@ void AC_WPNav::calculate_wp_leash_length(bool climb)
             // feed forward velocity request
             desired_vel.x += _target_vel.x;
             desired_vel.y += _target_vel.y;
-        }
 
         // call velocity to acceleration controller
         get_ir_velocity_to_acceleration(desired_vel.x, desired_vel.y, dt);
@@ -850,3 +838,4 @@ void AC_WPNav::calculate_wp_leash_length(bool climb)
         _desired_pitch = constrain_float(fast_atan(-accel_forward/(-z_accel_meas))*(18000/M_PI), -MAX_LEAN_ANGLE, MAX_LEAN_ANGLE);
     }
 }
+#endif

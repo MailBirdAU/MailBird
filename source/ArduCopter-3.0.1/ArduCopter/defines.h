@@ -15,16 +15,16 @@
 
 // Flight modes
 // ------------
-#define YAW_HOLD                        0       // heading hold at heading in nav_yaw but allow input from pilot
-#define YAW_ACRO                        1       // pilot controlled yaw using rate controller
-#define YAW_LOOK_AT_NEXT_WP             2       // point towards next waypoint (no pilot input accepted)
-#define YAW_LOOK_AT_LOCATION            3       // point towards a location held in yaw_look_at_WP (no pilot input accepted)
-#define YAW_CIRCLE                      4       // point towards a location held in yaw_look_at_WP (no pilot input accepted)
+#define YAW_HOLD                    0       // heading hold at heading in nav_yaw but allow input from pilot
+#define YAW_ACRO                    1       // pilot controlled yaw using rate controller
+#define YAW_LOOK_AT_NEXT_WP         2       // point towards next waypoint (no pilot input accepted)
+#define YAW_LOOK_AT_LOCATION        3       // point towards a location held in yaw_look_at_WP (no pilot input accepted)
+#define YAW_CIRCLE                  4       // point towards a location held in yaw_look_at_WP (no pilot input accepted)
 #define YAW_LOOK_AT_HOME    		5       // point towards home (no pilot input accepted)
 #define YAW_LOOK_AT_HEADING    		6       // point towards a particular angle (not pilot input accepted)
-#define YAW_LOOK_AHEAD		        7	// WARNING!  CODE IN DEVELOPMENT NOT PROVEN
-#define YAW_TOY                         8       // THOR This is the Yaw mode
-#define YAW_RESETTOARMEDYAW		9       // point towards heading at time motors were armed
+#define YAW_LOOK_AHEAD		        7	    // WARNING!  CODE IN DEVELOPMENT NOT PROVEN
+#define YAW_TOY                     8       // THOR This is the Yaw mode
+#define YAW_RESETTOARMEDYAW	    	9       // point towards heading at time motors were armed
 
 #define ROLL_PITCH_STABLE           0       // pilot input roll, pitch angles
 #define ROLL_PITCH_ACRO             1       // pilot inputs roll, pitch rotation rates
@@ -32,6 +32,7 @@
 #define ROLL_PITCH_STABLE_OF        3       // pilot inputs roll, pitch angles which are mixed with optical flow based position controller lean anbles
 #define ROLL_PITCH_TOY              4       // THOR This is the Roll and Pitch mode
 #define ROLL_PITCH_LOITER           5       // pilot inputs the desired horizontal velocities
+#define ROLL_PITCH_IR_LAND          6       // no pilot input. autopilot roll, pitch set by IR module
 
 #define THROTTLE_MANUAL                     0   // manual throttle mode - pilot input goes directly to motors
 #define THROTTLE_MANUAL_TILT_COMPENSATED    1   // mostly manual throttle but with some tilt compensation

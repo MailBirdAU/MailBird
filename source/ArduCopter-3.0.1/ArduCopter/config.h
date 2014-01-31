@@ -747,8 +747,8 @@
  # define LOITER_YAW                YAW_HOLD
 #endif
 
-#ifndef LOITER_RP
- # define LOITER_RP                 ROLL_PITCH_LOITER
+#ifndef IR_RP
+ # define IR_RP                 ROLL_PITCH_IR_LAND
 #endif
 
 #ifndef LOITER_THR

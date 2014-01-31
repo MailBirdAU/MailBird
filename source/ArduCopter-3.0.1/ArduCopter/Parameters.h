@@ -215,6 +215,7 @@ public:
         //
         // 210: Waypoint data
         //
+        k_param_waypoint_flightmode = 209,
         k_param_waypoint_mode = 210, // remove
         k_param_command_total,
         k_param_command_index,
@@ -296,6 +297,7 @@ public:
 
     // Waypoints
     //
+    AP_Int8         waypoint_flightmode;
     AP_Int8         command_total;
     AP_Int8         command_index;
     AP_Int16        circle_radius;

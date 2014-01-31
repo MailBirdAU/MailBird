@@ -205,6 +205,13 @@ const AP_Param::Info var_info[] PROGMEM = {
     // @User: Advanced
     GSCALAR(wp_yaw_behavior,  "WP_YAW_BEHAVIOR",    WP_YAW_BEHAVIOR_DEFAULT),
 
+    // @Param: WP_FLIGHTMODE
+    // @DisplayName: Waypoint Flightmode
+    // @Description: flightmode in which the autopilot is currently in.
+    // @Values: 0:Everything,1:IR_LAND
+    // @User: Advanced
+    GSCALAR(waypoint_flightmode,  "WP_FLIGHTMODE",         0),
+
     // @Param: WP_TOTAL
     // @DisplayName: Waypoint Total
     // @Description: Total number of commands in the mission stored in the eeprom.  Do not update this parameter directly!

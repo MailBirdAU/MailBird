@@ -1,6 +1,8 @@
 /// -*- tab-width: 4; Mode: C++; c-basic-offset: 4; indent-tabs-mode: nil -*-
 
 #define THISFIRMWARE "ArduCopter V3.0.1"
+#define IR_ENABLED   1
+#define IR_DISABLED  0
 /*
  *  ArduCopter Version 3.0
  *  Creator:        Jason Short
@@ -1582,6 +1584,7 @@ bool set_roll_pitch_mode(uint8_t new_roll_pitch_mode)
         case ROLL_PITCH_AUTO:
         case ROLL_PITCH_STABLE_OF:
         case ROLL_PITCH_TOY:
+            wp_nav.set_ir_enabled(IR_DISABLED);
             roll_pitch_initialised = true;
             break;
 
@@ -1590,9 +1593,12 @@ bool set_roll_pitch_mode(uint8_t new_roll_pitch_mode)
             if( ap.home_is_set ) {
                 roll_pitch_initialised = true;
             }
+            wp_nav.set_ir_enabled(IR_DISABLED);
             break;
-        //case ROLL_PITCH_IR_LAND
-            // require ir led
+        case ROLL_PITCH_IR_LAND:
+            //require ir led
+            wp_nav.set_ir_enabled(IR_ENABLED);
+            break;
     }
 
     // if initialisation has been successful update the yaw mode
