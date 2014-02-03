@@ -463,7 +463,7 @@ static void set_mode(uint8_t mode)
     	ap.manual_throttle = false;
     	ap.manual_attitude = false;
         set_yaw_mode(LOITER_YAW);
-        set_roll_pitch_mode(LOITER_RP);
+        set_roll_pitch_mode(IR_RP);
         set_throttle_mode(LOITER_THR);
         set_nav_mode(LOITER_NAV);
         break;

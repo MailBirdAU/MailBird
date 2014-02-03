@@ -145,6 +145,10 @@ public:
     
     /// set_ir_enabled - sets IR flag for IR position control instead of GPS control
     void set_ir_enabled(bool IRflag) { ir_enabled = IRflag; };
+    
+    void set_dist_error_x(float dist_error_x) { camera_error_x = dist_error_x; };
+    
+    void set_dist_error_y(float dist_error_y) { camera_error_y = dist_error_y; };
 
     static const struct AP_Param::GroupInfo var_info[];
 
@@ -234,6 +238,8 @@ protected:
     float       _track_speed;           // speed in cm/s along track
     float       _track_leash_length;    // leash length along track
     bool        ir_enabled;             // IR module flag used to switch between IR and GPS position control
+    float       camera_error_x;         // distance error in x plane calculated by IR camera control
+    float       camera_error_y;         // distance error in y plane calculated by IR camera control
 
 public:
     // for logging purposes
