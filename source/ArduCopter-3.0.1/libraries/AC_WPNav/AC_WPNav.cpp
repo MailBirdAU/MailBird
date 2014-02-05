@@ -100,7 +100,8 @@ AC_WPNav::AC_WPNav(AP_InertialNav* inav, AP_AHRS* ahrs, APM_PI* pid_pos_lat, APM
     desired_accel(0,0),
     ir_enabled(0),
     camera_error_x(0),
-    camera_error_y(0)
+    camera_error_y(0),
+    ir_lock(0)
 {
     AP_Param::setup_object_defaults(this, var_info);
 

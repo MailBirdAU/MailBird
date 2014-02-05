@@ -1597,7 +1597,7 @@ bool set_roll_pitch_mode(uint8_t new_roll_pitch_mode)
             break;
             
         case ROLL_PITCH_IR_LAND:
-            //require ir led
+            if(get_IR_lock ())
             wp_nav.set_ir_enabled(IR_ENABLED);
             break;
     }

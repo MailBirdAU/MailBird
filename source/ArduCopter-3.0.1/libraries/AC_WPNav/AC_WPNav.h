@@ -149,6 +149,10 @@ public:
     void set_dist_error_x(float dist_error_x) { camera_error_x = dist_error_x; };
     
     void set_dist_error_y(float dist_error_y) { camera_error_y = dist_error_y; };
+    
+    void set_IR_lock (bool IRlock) { ir_lock = IRlock; };
+    
+    bool get_IR_lock () { return ir_lock; };
 
     static const struct AP_Param::GroupInfo var_info[];
 
@@ -240,6 +244,7 @@ protected:
     bool        ir_enabled;             // IR module flag used to switch between IR and GPS position control
     float       camera_error_x;         // distance error in x plane calculated by IR camera control
     float       camera_error_y;         // distance error in y plane calculated by IR camera control
+    bool        ir_lock;                // do I see IR Leds?
 
 public:
     // for logging purposes
