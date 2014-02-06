@@ -105,6 +105,7 @@
 #include <memcheck.h>           // memory limit checker
 #include <SITL.h>               // software in the loop support
 #include <AP_Scheduler.h>       // main loop scheduler
+#include <aaWiiCamera.h>
 
 // AP_HAL to Arduino compatibility layer
 #include "compat.h"
@@ -1597,7 +1598,7 @@ bool set_roll_pitch_mode(uint8_t new_roll_pitch_mode)
             break;
             
         case ROLL_PITCH_IR_LAND:
-            if(get_IR_lock ())
+            if(wp_nav.get_IR_lock())
             wp_nav.set_ir_enabled(IR_ENABLED);
             break;
     }
