@@ -15,6 +15,8 @@
 #include <AP_Declination.h>
 #include <AP_Compass.h> // Compass Library
 
+#include <aaWiiCamera.h>
+
 const AP_HAL::HAL& hal = AP_HAL_BOARD_DRIVER;
 
 #if CONFIG_HAL_BOARD == HAL_BOARD_PX4
@@ -24,103 +26,259 @@ AP_Compass_HMC5843 compass;
 #endif
 uint32_t timer;
 
+byte WiiCamera_State;
+byte idx;
+int blobcount;					// returns the number of blobs found
+Blobs Blob[4];					// array of four structures to store blob data
+
+//char     idx;
+int ledPin = 13;
+int i;
+int Ix1,Iy1,Ix2,Iy2;
+int Ix3,Iy3,Ix4,Iy4;
+int s;
+
+uint8_t  read[16];
+uint8_t  *readptr = &read[0];
+
+uint8_t  control[2]    = {0x30,0x01};
+uint8_t  max [2]       = {0x06,0x90};
+uint8_t  gain [2]      = {0x08,0xC0};
+uint8_t  gainlimit [2] = {0x1A,0x40};
+uint8_t  mode [2]      = {0x33,0x33};
+uint8_t  last [2]      = {0x30,0x08};
+
+uint8_t *controlptr = &control[0];
+uint8_t *maxptr = &max[0];
+uint8_t *gainptr = &gain[0];
+uint8_t *gainlimitptr = &gainlimit[0];
+uint8_t *modeptr = &mode[0];
+uint8_t *lastptr = &last[0];
+
+uint8_t  B0 [5] = {0xB0,0xB0,0xB0,0xB0,0xB0};
+uint8_t *B0ptr  = &last[0];
+
+uint8_t  data    = 0x36;
+uint8_t *dataptr = &data;
+AP_HAL::Semaphore*  _i2c_sem;
+
+#define WII_CAMERA_PORT 0x58
+
 void setup() {
-    hal.console->println("Compass library test");
+#if 0
+    //hal.i2c->begin();
+    hal.scheduler->delay(100);
+    
+    hal.i2c->IRCam_init();
+    
+    hal.scheduler->delay(100);
 
-    if (!compass.init()) {
-        hal.console->println("compass initialisation failed!");
-        while (1) ;
+    _i2c_sem = hal.i2c->get_semaphore();
+    if (!_i2c_sem->take(HAL_SEMAPHORE_BLOCK_FOREVER)) {
+        hal.scheduler->panic(PSTR("Failed to get HMC5843 semaphore"));
     }
-    hal.console->println("init done");
-
-    compass.set_offsets(0,0,0); // set offsets to account for surrounding interference
-    compass.set_declination(ToRad(0.0)); // set local difference between magnetic north and true north
-
-    hal.console->print("Compass auto-detected as: ");
-    switch( compass.product_id ) {
-    case AP_COMPASS_TYPE_HIL:
-        hal.console->println("HIL");
-        break;
-    case AP_COMPASS_TYPE_HMC5843:
-        hal.console->println("HMC5843");
-        break;
-    case AP_COMPASS_TYPE_HMC5883L:
-        hal.console->println("HMC5883L");
-        break;
-    case AP_COMPASS_TYPE_PX4:
-        hal.console->println("PX4");
-        break;
-    default:
-        hal.console->println("unknown");
-        break;
-    }
+    
+    hal.i2c->setHighSpeed(false);
+    
+    //hal.i2c->write((uint8_t)WII_CAMERA_PORT,0, B0ptr);
+    //hal.i2c->write((uint8_t)WII_CAMERA_PORT,0, B0ptr);
+    //hal.i2c->write((uint8_t)WII_CAMERA_PORT,0, B0ptr);
+    //hal.i2c->write((uint8_t)WII_CAMERA_PORT,0, B0ptr);
+    //hal.i2c->write((uint8_t)WII_CAMERA_PORT,0, B0ptr);
+    //hal.i2c->write((uint8_t)WII_CAMERA_PORT,0, B0ptr);
+    //hal.i2c->write((uint8_t)WII_CAMERA_PORT,5, B0ptr);
+    
+    ///////////////////////
+    //INITALIZE CAMERA HERE
+    ///////////////////////
+    //Write2bytes(0x30,0x01);				//Control byte, allows modification of settings
+    //Write2bytes(0x30,0x08);				// was 2nd - suspect it really needs to be here
+    //Write2bytes(0x06,0x90);				// MAXSIZE - Maximum blob size. Wii uses values from 0x62 to 0xc8.
+    //Write2bytes(0x08,0xC0);				// GAIN - Sensor Gain. Smaller values = higher gain. Numerical gain is proportional to 1/2^(n/16) for n<0x40
+    //Write2bytes(0x1A,0x40);				// GAINLIMIT - Sensor Gain Limit. Must be less than GAIN for camera to function. No other effect?
+    //Write2bytes(0x33,0x33);				// MODE - Camera mode
+    
+    /*hal.scheduler->delay(20000);
+    hal.i2c->writeRegister((uint8_t)WII_CAMERA_PORT,0x30,0x01);
+    hal.scheduler->delay(50);
+    hal.i2c->writeRegister((uint8_t)WII_CAMERA_PORT,0x30,0x08);
+    hal.scheduler->delay(50);
+    hal.i2c->writeRegister((uint8_t)WII_CAMERA_PORT,0x06,0x90);
+    hal.scheduler->delay(50);
+    hal.i2c->writeRegister((uint8_t)WII_CAMERA_PORT,0x08,0xC0);
+    hal.scheduler->delay(50);
+    hal.i2c->writeRegister((uint8_t)WII_CAMERA_PORT,0x1A,0x40);
+    hal.scheduler->delay(50);
+    hal.i2c->writeRegister((uint8_t)WII_CAMERA_PORT,0x33,0x33);
+    hal.scheduler->delay(100);*/
+    
+    hal.i2c->write((uint8_t)WII_CAMERA_PORT,2, controlptr);
+    hal.scheduler->delay(50);
+    hal.i2c->write((uint8_t)WII_CAMERA_PORT,2, lastptr);
+    hal.scheduler->delay(50);
+    hal.i2c->write((uint8_t)WII_CAMERA_PORT,2, maxptr);
+    hal.scheduler->delay(50);
+    hal.i2c->write((uint8_t)WII_CAMERA_PORT,2, gainptr);
+    hal.scheduler->delay(50);
+    hal.i2c->write((uint8_t)WII_CAMERA_PORT,2, gainlimitptr);
+    hal.scheduler->delay(50);
+    hal.i2c->write((uint8_t)WII_CAMERA_PORT,2, modeptr);
+    hal.scheduler->delay(50);
+    
+    _i2c_sem->give();
 
     hal.scheduler->delay(1000);
-    timer = hal.scheduler->micros();
+#endif
+  
+  hal.i2c->IRCam_init();  
+  hal.scheduler->delay(100);
+
+  _i2c_sem = hal.i2c->get_semaphore();
+  if (!_i2c_sem->take(HAL_SEMAPHORE_BLOCK_FOREVER)) {
+      hal.scheduler->panic(PSTR("Failed to get HMC5843 semaphore"));
+  }
+    
+  hal.i2c->setHighSpeed(false);  
+	
+  hal.i2c->write((uint8_t)WII_CAMERA_PORT,2, controlptr);
+  hal.scheduler->delay(50);
+  hal.i2c->write((uint8_t)WII_CAMERA_PORT,2, lastptr);
+  hal.scheduler->delay(50);
+  hal.i2c->write((uint8_t)WII_CAMERA_PORT,2, maxptr);
+  hal.scheduler->delay(50);
+  hal.i2c->write((uint8_t)WII_CAMERA_PORT,2, gainptr);
+  hal.scheduler->delay(50);
+  hal.i2c->write((uint8_t)WII_CAMERA_PORT,2, gainlimitptr);
+  hal.scheduler->delay(50);
+  hal.i2c->write((uint8_t)WII_CAMERA_PORT,2, modeptr);
+  hal.scheduler->delay(50);
+    
+  _i2c_sem->give();
+
+  hal.scheduler->delay(1000);
+    
+  WiiCamera_State = 1;				    // Ready to Read state
 }
 
 void loop()
-{
-    static float min[3], max[3], offset[3];
+{   
+#if 0
+    //hal.i2c->setHighSpeed(false);
+    
+    //for(idx=0;idx<16;idx++) read[idx]=5;
+    
+    //hal.i2c->readRegisters((uint8_t)WII_CAMERA_PORT,0x36,16,readptr);
+    
+    hal.i2c->write((uint8_t)WII_CAMERA_PORT,1, dataptr);
+    hal.i2c->read((uint8_t)WII_CAMERA_PORT,16, readptr);
+    
+    //_i2c_sem->give();
+    
+    // Wii Remote IR sensor  test sample code  by kako
 
-    compass.accumulate();
+    Ix1 = read[1];
+    Iy1 = read[2];
+    s   = read[3];
+    Ix1 += (s & 0x30) <<4;
+    Iy1 += (s & 0xC0) <<2;
 
-    if((hal.scheduler->micros()- timer) > 100000L)
-    {
-        timer = hal.scheduler->micros();
-        compass.read();
-        unsigned long read_time = hal.scheduler->micros() - timer;
-        float heading;
+    Ix2 = read[4];
+    Iy2 = read[5];
+    s   = read[6];
+    Ix2 += (s & 0x30) <<4;
+    Iy2 += (s & 0xC0) <<2;
 
-        if (!compass.healthy) {
-            hal.console->println("not healthy");
-            return;
-        }
-	Matrix3f dcm_matrix;
-	// use roll = 0, pitch = 0 for this example
-	dcm_matrix.from_euler(0, 0, 0);
-        heading = compass.calculate_heading(dcm_matrix);
-        compass.null_offsets();
+    Ix3 = read[7];
+    Iy3 = read[8];
+    s   = read[9];
+    Ix3 += (s & 0x30) <<4;
+    Iy3 += (s & 0xC0) <<2;
 
-        // capture min
-        if( compass.mag_x < min[0] )
-            min[0] = compass.mag_x;
-        if( compass.mag_y < min[1] )
-            min[1] = compass.mag_y;
-        if( compass.mag_z < min[2] )
-            min[2] = compass.mag_z;
+    Ix4 = read[10];
+    Iy4 = read[11];
+    s   = read[12];
+    Ix4 += (s & 0x30) <<4;
+    Iy4 += (s & 0xC0) <<2;
 
-        // capture max
-        if( compass.mag_x > max[0] )
-            max[0] = compass.mag_x;
-        if( compass.mag_y > max[1] )
-            max[1] = compass.mag_y;
-        if( compass.mag_z > max[2] )
-            max[2] = compass.mag_z;
+    hal.console->printf_P(PSTR("Ix1: %d"),(int)Ix1);
+    hal.console->printf_P(PSTR("Iy1: %d\r\n"),(int)Iy1);
+    hal.console->printf_P(PSTR("Ix2: %d"),(int)Ix2);
+    hal.console->printf_P(PSTR("Iy2: %d\r\n"),(int)Iy2);
+    
+    hal.scheduler->delay(1000);
+#endif
+	
+  uint8_t data = 0x36;
+  uint8_t*dataptr = &data;
+  uint8_t data_buf[16];
+  uint8_t*data_bufptr = &data_buf[0];
+  int idx=0;
+  int s;
 
-        // calculate offsets
-        offset[0] = -(max[0]+min[0])/2;
-        offset[1] = -(max[1]+min[1])/2;
-        offset[2] = -(max[2]+min[2])/2;
+if(WiiCamera_State==1)	// New Read request
+  {
+	// clear space for new data
+	for (idx=0;idx<16;idx++) data_buf[idx]=0;
+	// index for data pointer
+	idx = 0;
 
-        // display all to user
-        hal.console->printf("Heading: %.2f (%3d,%3d,%3d) i2c error: %u",
-			    ToDeg(heading),
-			    (int)compass.mag_x,
-			    (int)compass.mag_y,
-			    (int)compass.mag_z, 
-			    (unsigned)hal.i2c->lockup_count());
+	// Reset the blob counter
+	blobcount = 0;
 
-        // display offsets
-        hal.console->printf(" offsets(%.2f, %.2f, %.2f)",
-                      offset[0], offset[1], offset[2]);
+	WiiCamera_State++;	// new state expects data
+  }
 
-        hal.console->printf(" t=%u", (unsigned)read_time);
+  if (WiiCamera_State>=2)	// Waiting for first Data byte from a previous read request
+  {
+    WiiCamera_State++;		// new state, now reading data
+    
+    //hal.i2c->readRegisters((uint8_t)WII_CAMERA_PORT,0x36,16,readptr);
 
-        hal.console->println();
-    } else {
-	    hal.scheduler->delay(1);
-    }
+    hal.i2c->write((uint8_t)WII_CAMERA_PORT,1, dataptr);
+    hal.i2c->read((uint8_t)WII_CAMERA_PORT,16, data_bufptr);
+
+	// if we have 16 bytes of data
+	if (idx >= 16)
+	{
+	    Blob[0].X= data_buf[1];
+        Blob[0].Y = data_buf[2];
+        s   = data_buf[3];
+        Blob[0].X+= (s & 0x30) <<4;
+        Blob[0].Y += (s & 0xC0) <<2;
+        Blob[0].Size = (s & 0x0F);
+		if (Blob[0].Size<15) blobcount++;
+
+        Blob[1].X = data_buf[4];
+        Blob[1].Y = data_buf[5];
+        s   = data_buf[6];
+        Blob[1].X += (s & 0x30) <<4;
+        Blob[1].Y += (s & 0xC0) <<2;
+        Blob[1].Size = (s & 0x0F);
+		if (Blob[1].Size<15) blobcount++;
+
+        Blob[2].X = data_buf[7];
+        Blob[2].Y = data_buf[8];
+        s   = data_buf[9];
+        Blob[2].X += (s & 0x30) <<4;
+        Blob[2].Y += (s & 0xC0) <<2;
+        Blob[2].Size = (s & 0x0F);
+		if (Blob[2].Size<15) blobcount++;
+
+        Blob[3].X = data_buf[10];
+        Blob[3].Y = data_buf[11];
+        s   = data_buf[12];
+        Blob[3].X += (s & 0x30) <<4;
+        Blob[3].Y += (s & 0xC0) <<2;
+        Blob[3].Size = (s & 0x0F);
+		if (Blob[3].Size<15) blobcount++;
+
+		WiiCamera_State = 1;				// back to ready to Read state
+	}
+	if (WiiCamera_State>=10) WiiCamera_State = 1;	// Waited too long for data - back to ready to Read state
+}
+
+hal.scheduler->delay(1000);
+
 }
 
 AP_HAL_MAIN();
