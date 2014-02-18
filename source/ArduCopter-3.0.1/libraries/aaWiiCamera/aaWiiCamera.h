@@ -4,7 +4,6 @@
 typedef unsigned char byte;
 
 #include <Arduino.h>
-#include <Wire.h>
 #include <AP_HAL.h>
 
 

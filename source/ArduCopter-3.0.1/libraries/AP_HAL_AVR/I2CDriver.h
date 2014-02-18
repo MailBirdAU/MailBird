@@ -10,7 +10,8 @@
 class AP_HAL_AVR::AVRI2CDriver : public AP_HAL::I2CDriver {
 public:
     AVRI2CDriver(AP_HAL::Semaphore *sem) : _sem(sem) {}
-
+    
+    void IRCam_init();
     void begin();
     void end();
     void setTimeout(uint16_t ms) { _timeoutDelay = ms; }

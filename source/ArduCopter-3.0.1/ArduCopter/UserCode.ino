@@ -15,7 +15,6 @@ void userhook_init()
 void userhook_FastLoop()
 {
     // put your 100Hz code here
-    //wp_nav.set_ir_enabled(IR_ENABLED);
 }
 #endif
 

@@ -66,6 +66,12 @@ extern const AP_HAL::HAL& hal;
 #define cbi(sfr, bit)   (_SFR_BYTE(sfr) &= ~_BV(bit))
 #define sbi(sfr, bit)   (_SFR_BYTE(sfr) |= _BV(bit))
 
+void AVRI2CDriver::IRCam_init(){
+	TWCR = _BV(TWINT) | _BV(TWEA) | _BV(TWEN) | _BV(TWIE) | _BV(TWSTA);
+	_waitInterrupt();
+	_stop();
+}
+
 void AVRI2CDriver::begin() {
     // activate internal pull-ups for twi
     // as per note from atmega128 manual pg204
@@ -149,20 +155,26 @@ uint8_t AVRI2CDriver::read(uint8_t addr, uint8_t len, uint8_t* data){
     uint8_t nackposition = len - 1;
     stat = 0;
     stat = _start();
-    if(stat) goto error;
+    /*if(stat) goto error;
     stat = _sendAddress(SLA_W(addr));
     if(stat) goto error;
     stat = _start();
-    if(stat) goto error;
+    if(stat) goto error;*/
     stat = _sendAddress(SLA_R(addr));
     if(stat) goto error;
     for(uint8_t i = 0; i < len ; i++) {
+    	//hal.console->printf_P(PSTR("%d\r\n"),(int)i);
         if ( i == nackposition ) {
             stat = _receiveByte(false);
-            if (stat != MR_DATA_NACK) goto error;
+            if (stat != MR_DATA_NACK)goto error;
         } else {
             stat = _receiveByte(true);
-            if (stat != MR_DATA_ACK) goto error;
+            if (stat != MR_DATA_ACK){
+            	//we're falling into this hole
+            	//hal.console->printf_P(PSTR("%d\r\n"),(int)stat);
+		        //hal.console->printf_P(PSTR("%d\r\n"),(int)MR_DATA_ACK);
+            	goto error;
+            }
         }
         data[i] = TWDR;
     }
@@ -170,6 +182,7 @@ uint8_t AVRI2CDriver::read(uint8_t addr, uint8_t len, uint8_t* data){
     if (stat) goto error;
     return stat;
 error:
+    //hal.console->printf_P("error");
     _lockup_count++;
     return stat;
 }
@@ -239,8 +252,11 @@ uint8_t AVRI2CDriver::_sendAddress(uint8_t addr) {
 uint8_t AVRI2CDriver::_sendByte(uint8_t data) {
     TWDR = data;
     TWCR = _BV(TWINT) | _BV(TWEN);
+    //hal.console->printf_P(PSTR("Send Byte TWSR: %d\r\n"),(int)TWSR);
     uint8_t stat = _waitInterrupt();
     if (stat) return stat;
+    
+    //hal.console->printf_P(PSTR("%d\r\n"),(int)TWI_STATUS);
 
     if (TWI_STATUS  == MT_DATA_ACK) {
         return 0;
@@ -255,6 +271,7 @@ uint8_t AVRI2CDriver::_receiveByte(bool ack) {
     } else {
         TWCR = _BV(TWINT) | _BV(TWEN);
     }
+    //hal.console->printf_P(PSTR("Recieve Byte TWSR: %d\r\n"),(int)TWSR);
     uint8_t stat = _waitInterrupt();
     if (stat) return stat;
     return TWI_STATUS;
@@ -264,6 +281,7 @@ void AVRI2CDriver::_handleLockup() {
     TWCR = 0; /* Releases SDA and SCL lines to high impedance */
     TWCR = _BV(TWEN) | _BV(TWIE) | _BV(TWEA); /* Reinitialize TWI */
     _lockup_count++;
+    //hal.console->printf_P("handling lockup");
 }
 
 uint8_t AVRI2CDriver::_waitInterrupt() {

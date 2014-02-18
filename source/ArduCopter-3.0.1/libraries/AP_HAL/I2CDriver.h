@@ -8,6 +8,7 @@
 
 class AP_HAL::I2CDriver {
 public:
+	virtual void IRCam_init() = 0;
     virtual void begin() = 0;
     virtual void end() = 0;
     virtual void setTimeout(uint16_t ms) = 0;
