@@ -12,7 +12,7 @@ body {
 
 /*Thumbnail Background*/
 .thumb {
-	width: 320px; height: 240px; margin: 56px auto;
+	width: 200px; height: 240px; margin: 56px auto;
 	-webkit-perspective: 800px;
 }
 .thumb a {
@@ -20,7 +20,7 @@ body {
 	/*double layered BG for lighting effect*/
 	background: 
 		linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), 
-		url("http://thecodeplayer.com/u/m/i1.png");
+		url("robot.png");
 	/*disabling the translucent black bg on the main image*/
 	background-size: 0, cover;
 	/*3d space for children*/
@@ -68,6 +68,9 @@ body {
 	/*pushing the shadow down and scaling it down to size*/
 	-webkit-transform: rotateX(0) translateZ(-60px) scale(0.85);
 }
+
+.hidden { display: none; }
+.unhidden { display: block; }
 
 
 

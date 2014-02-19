@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang = "en">
+<head>
+	<link rel="stylesheet" type="text/css" href="style.css">
+	
+	<script type="text/javascript">
+		function unhide(divID) {
+			var item = document.getElementById(divID);
+			if (item) {
+				item.className=(item.className=='hidden')?'unhidden':'hidden';
+			}
+		}
+	</script>
+</head>
+
+<body>
+
+<div>
+
+<div style="width:80%;margin-left:auto;margin-right:auto;overflow:hidden">
+<div>
+  <div style="float:left" class="thumb">
+    
+    <a onmouseover="javascript:unhide('learnHTML');" href="javascript:unhide('learnHTML');">  
+      <span>Hugh Dillon</span>
+    </a>
+  </div>
+  
+    <div style="float:left" class="thumb">
+    
+    <a href="#">
+      
+      <span>Zac Hawkins</span>
+    </a>
+  </div>
+  
+  <div style="float:left" class="thumb">
+    
+    <a href="#">
+      
+      <span>Rick Holloway</span>
+    </a>
+  </div>
+  
+  <div style="float:left" class="thumb">
+    
+    <a href="#">
+      
+      <span>Ben Smith</span>
+    </a>
+  </div>
+  
+
+  
+  </div>
+  
+    <div style="float:left" class="thumb">
+    
+    <a href="#">
+      
+      <span>Hunter Thorington</span>
+    </a>
+  </div>
+  </div>
+  
+ <div id="hugh" style="float:left">
+  
+  <p>This is the content column. It starts out blank except for this explanation text. Choose what you want to learn in the navigation column on the left. The text will appear below:</p>
+  <div id="learnHTML" class="hidden">
+    <h3>Learn HTML</h3>
+    <ul>
+      <li><a href="http://webdesign.about.com/c/ec/9.htm">Free HTML Class</a></li>
+      <li><a href="http://webdesign.about.com/od/beginningtutorials/a/bl_htmltutorial.htm">HTML Tutorial</a></li>
+      <li><a href="http://webdesign.about.com/cs/xhtmlxml/a/aa013100a.htm">What is XHTML?</a></li>
+    </ul>
+ </div>
+
+
+	</div>
+</div>
+</body></html>
