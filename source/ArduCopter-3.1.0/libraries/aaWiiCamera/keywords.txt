@@ -1,0 +1,5 @@
+WiiCamera	KEYWORD1
+init	KEYWORD2
+read	KEYWORD2
+blobcount KEYWORD2
+Blobs	KEYWORD2
