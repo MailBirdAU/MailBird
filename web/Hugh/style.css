@@ -6,9 +6,41 @@
 html, body {min-height: 100%;}
 /*a nice BG*/
 body {
-	background: #544; /*fallback*/
-	background: linear-gradient(#544, #565);
+	background: ##6C6753; /*fallback*/
+	background: linear-gradient(#E0E0E0, #C1C1C1);
 }
+
+.quadcopter {
+	width: 400px; height: 300px; margin: 56px auto;
+}
+.quadcopter a {
+	display: block; width: 100%; height: 100%;
+	background: url("g10740.png");
+	background-size: 0,cover;
+}
+
+#prop:hover {
+    -webkit-animation: rotation 1s infinite linear;
+}
+#prop2:hover {
+	-webkit-animation: rotRev 1s infinite linear;
+}
+#prop3:hover {
+	-webkit-animation: rotation 1s infinite linear;
+}
+#prop4:hover {
+	-webkit-animation: rotRev 1s infinite linear;
+}
+
+@-webkit-keyframes rotation {
+    from {-webkit-transform: rotate(0deg);}
+    to   {-webkit-transform: rotate(359deg);}
+}
+@-webkit-keyframes rotRev {
+	from {-webkit-transform: rotate(359deg);}
+	to   {-webkit-transform: rotate(0deg);}
+}
+
 
 /*Thumbnail Background*/
 .thumb {
@@ -68,6 +100,8 @@ body {
 	/*pushing the shadow down and scaling it down to size*/
 	-webkit-transform: rotateX(0) translateZ(-60px) scale(0.85);
 }
+
+
 
 
 
