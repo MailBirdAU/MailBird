@@ -554,7 +554,7 @@
 #endif
 
 #ifndef ACRO_RP
- # define ACRO_RP            	    ROLL_PITCH_ACRO
+ # define ACRO_RP            	    ROLL_PITCH_IR_LAND
 #endif
 
 #ifndef ACRO_THR
@@ -584,7 +584,7 @@
 #endif
 
 #ifndef ALT_HOLD_RP
- # define ALT_HOLD_RP            	ROLL_PITCH_STABLE
+ # define ALT_HOLD_RP            	ROLL_PITCH_IR_LAND //ROLL_PITCH_STABLE
 #endif
 
 #ifndef ALT_HOLD_THR

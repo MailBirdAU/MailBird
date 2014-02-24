@@ -583,22 +583,26 @@ void AC_WPNav::get_loiter_position_to_velocity(float dt, float max_speed_cms)
 
     float linear_distance;      // the distace we swap between linear and sqrt.
     float kP = _pid_pos_lat->kP();
-
+    
     // avoid divide by zero
     if (kP <= 0.0f) {
         desired_vel.x = 0.0;
         desired_vel.y = 0.0;
     }else{
     	// calculate distance error
-    	if(ir_enabled){
+    	hal.console->printf_P(PSTR("IRMD! %d\n"),(int)ir_enabled);
+    	if(ir_enabled){    		
     	   dist_error.x = camera_error_x;
     	   dist_error.y = camera_error_y;
+    	   //hal.console->printf_P(PSTR("x %d\n"),(int)dist_error.x);
+    	   //hal.console->printf_P(PSTR("y %d\n"),(int)dist_error.y);
     	}else{
-        dist_error.x = _target.x - curr.x;
-        dist_error.y = _target.y - curr.y;
+           dist_error.x = _target.x - curr.x;
+           dist_error.y = _target.y - curr.y;
     	}
 
         linear_distance = _wp_accel_cms/(2.0f*kP*kP);
+        //hal.console->printf_P(PSTR("linear_distance %d\n"),(int)linear_distance);
 
         dist_error_total = safe_sqrt(dist_error.x*dist_error.x + dist_error.y*dist_error.y);
         _distance_to_target = dist_error_total;      // for reporting purposes
@@ -680,6 +684,9 @@ void AC_WPNav::get_loiter_acceleration_to_lean_angles(float accel_lat, float acc
     // update angle targets that will be passed to stabilize controller
     _desired_roll = constrain_float(fast_atan(accel_right*_cos_pitch/(-z_accel_meas))*(18000/M_PI), -_lean_angle_max_cd, _lean_angle_max_cd);
     _desired_pitch = constrain_float(fast_atan(-accel_forward/(-z_accel_meas))*(18000/M_PI), -_lean_angle_max_cd, _lean_angle_max_cd);
+    
+    //hal.console->printf_P(PSTR("desired_roll %d\n"),(int)_desired_roll);
+    //hal.console->printf_P(PSTR("desired_pitch %d\n"),(int)_desired_pitch);
 }
 
 // get_bearing_cd - return bearing in centi-degrees between two positions

@@ -915,6 +915,7 @@ static const AP_Scheduler::Task scheduler_tasks[] PROGMEM = {
 #endif
 };
 
+bool TestVariable = false;
 
 void setup() {
     // this needs to be the first call, as it fills memory with
@@ -1622,10 +1623,13 @@ bool set_roll_pitch_mode(uint8_t new_roll_pitch_mode)
                roll_pitch_initialised = true;
             }
             break;
+            
         case ROLL_PITCH_IR_LAND:
             // require ir lock
-            if(wp_nav.get_IR_lock())
+            //if(wp_nav.get_IR_lock())
+               hal.console->printf_P(PSTR("IR_ENABLED"));
                wp_nav.set_ir_enabled(IR_ENABLED);
+               roll_pitch_initialised = true;
             break;
             
 #if AUTOTUNE == ENABLED
@@ -1778,6 +1782,23 @@ void update_roll_pitch_mode(void)
         get_autotune_roll_pitch_controller(g.rc_1.control_in, g.rc_2.control_in, g.rc_4.control_in);
         break;
 #endif
+    
+    case ROLL_PITCH_IR_LAND:
+        update_simple_mode();
+         
+        // copy user input for logging purposes
+        control_roll            = g.rc_1.control_in;
+        control_pitch           = g.rc_2.control_in;
+
+        // copy latest output from nav controller to stabilize controller
+        nav_roll = wp_nav.get_desired_roll();
+        nav_pitch = wp_nav.get_desired_pitch();
+        //hal.console->printf_P(PSTR("\n navroll %d\n"),(int)nav_roll);
+        //hal.console->printf_P(PSTR("\n navpitch %d\n"),(int)nav_pitch);
+        //TestVariable = true;
+        get_stabilize_roll(nav_roll);
+        get_stabilize_pitch(nav_pitch);
+        break;
     }
 
 	#if FRAME_CONFIG != HELI_FRAME
