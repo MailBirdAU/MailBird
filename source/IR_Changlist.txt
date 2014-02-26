@@ -1,0 +1,22 @@
+<!-------Changelist for I2C IR Sensor---------->
+I2C Group:
+	Drivers.cpp
+	Drivers.h
+	Virtual.h
+
+APM_Config.h
+
+ArduCopter.pde
+
+config.h
+
+AC_WPNav.h
+AC_WPNav.cpp
+
+defines.h
+
+UserCode.pde
+
+Systems.pde
+
+Parameters.pde
