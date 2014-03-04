@@ -272,6 +272,8 @@ void AC_WPNav::update_loiter()
         reset_I();
         _loiter_step = 0;
     }
+    
+    reset_I();
 
     // reset step back to 0 if 0.1 seconds has passed and we completed the last full cycle
     if (dt > 0.095f && _loiter_step > 3) {
@@ -590,7 +592,7 @@ void AC_WPNav::get_loiter_position_to_velocity(float dt, float max_speed_cms)
         desired_vel.y = 0.0;
     }else{
     	// calculate distance error
-    	hal.console->printf_P(PSTR("IRMD! %d\n"),(int)ir_enabled);
+    	//hal.console->printf_P(PSTR("IRMD! %d\n"),(int)ir_enabled);
     	if(ir_enabled){    		
     	   dist_error.x = camera_error_x;
     	   dist_error.y = camera_error_y;

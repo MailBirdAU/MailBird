@@ -584,7 +584,7 @@
 #endif
 
 #ifndef ALT_HOLD_RP
- # define ALT_HOLD_RP            	ROLL_PITCH_IR_LAND //ROLL_PITCH_STABLE
+ # define ALT_HOLD_RP            	ROLL_PITCH_IR_LAND
 #endif
 
 #ifndef ALT_HOLD_THR

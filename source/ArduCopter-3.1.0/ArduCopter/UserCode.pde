@@ -20,53 +20,6 @@ void userhook_FastLoop()
 void userhook_50Hz()
 {
     // put your 50Hz code here
-	ircam.read();
-
-	float theta = 0.0;
-	float distance = 0.0;
-	float HeightAGL = 0.0;
-	float YawAngle = 0.0;
-	float MidPointX = 0.0;
-	float MidPointY = 0.0;
-	float Pix2mm =0;
-    hal.console->printf_P(PSTR("\nBlobCount: %d\n"),(int)ircam.blobcount);
-
-	if (ircam.blobcount==2)
-	{
-		wp_nav.set_IR_lock(1);
-		
-        // CALCULATIONS
-	    distance = sqrt(square(ircam.Blob[0].X-ircam.Blob[1].X) + square(ircam.Blob[0].Y-ircam.Blob[1].Y));    // Calculate the number of pixels between the two IR targets
-	    Pix2mm = distance/TARGET_MAX_WIDTH;                              									   // the number of pixels per cm at the target distance - will change with distance changes
-	    theta = distance * PIX2DEG / 2;                             										   // half the angle between the two outside targets in degrees
-	    HeightAGL = TARGET_MAX_WIDTH * 0.5 / tan(theta*DEG2RAD);         									   // Calculate the height of camera above targets
-	    YawAngle = atan2(ircam.Blob[0].Y-ircam.Blob[1].Y, ircam.Blob[0].X-ircam.Blob[1].X) * 180.0 / PI;       // Angle of rotation of the two targets in the image
-	    YawAngle += CAMERA_YAW;                                  						 // add any sensor alignment angle to yaw angle
-
-	    MidPointX = (ircam.Blob[0].X+ircam.Blob[1].X)/2.0;                            	     // find the mid point of the line in pixels
-	    MidPointY = (ircam.Blob[0].Y+ircam.Blob[1].Y)/2.0;
-	    WiiDisplacementX = int(X_CENTRE-MidPointX);                      					 // calculate the displacement of the midpoint from the centre of image in pixels
-	    WiiDisplacementY = int(Y_CENTRE-MidPointY);
-	    WiiDisplacementX /= Pix2mm;									  						 // Convert the displacement of the midpoint from the centre of image to mm
-	    WiiDisplacementY /= Pix2mm;
-	    WiiRange = HeightAGL;
-	    WiiRotation = YawAngle;
-	    
-	    //Print and pass to controller
-	    hal.console->printf_P(PSTR("XError: %d\n"),(int)WiiDisplacementX);
-	    hal.console->printf_P(PSTR("YError: %d\n"),(int)WiiDisplacementY);
-	    hal.console->printf_P(PSTR("Elevation: %d\n"),(int)WiiRange);
-		
-		wp_nav.set_dist_error_x(WiiDisplacementX);
-		wp_nav.set_dist_error_y(WiiDisplacementY);
-	    //
-	    
-	}
-	else
-	{
-	    WiiRange = 0;
-	    WiiRotation = 0;
-    }
 }
 #endif
 
@@ -75,7 +28,7 @@ void userhook_MediumLoop()
 {
     // put your 10Hz code here
     if (ircam.blobcount==2)
-        wp_nav.update_wpnav();
+        wp_nav.update_loiter();
 }
 #endif
 
@@ -83,8 +36,6 @@ void userhook_MediumLoop()
 void userhook_SlowLoop()
 {
     ircam.read();
-    
-    hal.console->printf_P(PSTR("\nTestVar: %d\n"),(int)TestVariable);
 
 	float theta = 0.0;
 	float distance = 0.0;
@@ -98,29 +49,30 @@ void userhook_SlowLoop()
 	if (ircam.blobcount==2)
 	{
         // CALCULATIONS
-	    distance = sqrt(square(ircam.Blob[0].X-ircam.Blob[1].X) + square(ircam.Blob[0].Y-ircam.Blob[1].Y));    // Calculate the number of pixels between the two IR targets
-	    Pix2mm = distance/TARGET_MAX_WIDTH;                              									   // the number of pixels per cm at the target distance - will change with distance changes
-	    theta = distance * PIX2DEG / 2;                             										   // half the angle between the two outside targets in degrees
-	    HeightAGL = TARGET_MAX_WIDTH * 0.5 / tan(theta*DEG2RAD);         									   // Calculate the height of camera above targets
-	    YawAngle = atan2(ircam.Blob[0].Y-ircam.Blob[1].Y, ircam.Blob[0].X-ircam.Blob[1].X) * 180.0 / PI;       // Angle of rotation of the two targets in the image
-	    YawAngle += CAMERA_YAW;                                  						 // add any sensor alignment angle to yaw angle
+	    distance = safe_sqrt((ircam.Blob[0].X-ircam.Blob[1].X)*(ircam.Blob[0].X-ircam.Blob[1].X)
+	                       + (ircam.Blob[0].Y-ircam.Blob[1].Y)*(ircam.Blob[0].Y-ircam.Blob[1].Y));  // Calculate the number of pixels between the two IR targets
+	    Pix2mm = distance/TARGET_MAX_WIDTH;                              		                    // the number of pixels per cm at the target distance - will change with distance changes
+	                       //theta = distance * PIX2DEG / 2;                             						                   // half the angle between the two outside targets in degrees
+	                       //HeightAGL = TARGET_MAX_WIDTH * 0.5 / tan(theta*DEG2RAD);         									   // Calculate the height of camera above targets
+	                       //YawAngle = atan2(ircam.Blob[0].Y-ircam.Blob[1].Y, ircam.Blob[0].X-ircam.Blob[1].X) * 180.0 / PI;      // Angle of rotation of the two targets in the image
+	                       //YawAngle += CAMERA_YAW;                                  						                       // add any sensor alignment angle to yaw angle
 
-	    MidPointX = (ircam.Blob[0].X+ircam.Blob[1].X)/2.0;                            	     // find the mid point of the line in pixels
+	    MidPointX = (ircam.Blob[0].X+ircam.Blob[1].X)/2.0;       // find the mid point of the line in pixels
 	    MidPointY = (ircam.Blob[0].Y+ircam.Blob[1].Y)/2.0;
-	    WiiDisplacementX = int(X_CENTRE-MidPointX);                      					 // calculate the displacement of the midpoint from the centre of image in pixels
+	    WiiDisplacementX = int(X_CENTRE-MidPointX);              // calculate the displacement of the midpoint from the centre of image in pixels
 	    WiiDisplacementY = int(Y_CENTRE-MidPointY);
-	    WiiDisplacementX /= Pix2mm;									  						 // Convert the displacement of the midpoint from the centre of image to mm
+	    WiiDisplacementX /= Pix2mm;						         // Convert the displacement of the midpoint from the centre of image to mm
 	    WiiDisplacementY /= Pix2mm;
+	        
 	    hal.console->printf_P(PSTR("XError: %d\n"),(int)WiiDisplacementX);
 	    hal.console->printf_P(PSTR("YError: %d\n"),(int)WiiDisplacementY);
-	    hal.console->printf_P(PSTR("Elevation: %d\n"),(int)WiiRange);
 	    
 	    wp_nav.set_dist_error_x(WiiDisplacementX);
 		wp_nav.set_dist_error_y(WiiDisplacementY);
 
 	    //
-	    WiiRange = HeightAGL/10.0;
-	    WiiRotation = YawAngle;
+	                       //WiiRange = HeightAGL/10.0;
+	                       //WiiRotation = YawAngle;
 	}
 	else
 	{

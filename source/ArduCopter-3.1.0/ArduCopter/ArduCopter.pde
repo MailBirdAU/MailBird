@@ -1793,9 +1793,7 @@ void update_roll_pitch_mode(void)
         // copy latest output from nav controller to stabilize controller
         nav_roll = wp_nav.get_desired_roll();
         nav_pitch = wp_nav.get_desired_pitch();
-        //hal.console->printf_P(PSTR("\n navroll %d\n"),(int)nav_roll);
-        //hal.console->printf_P(PSTR("\n navpitch %d\n"),(int)nav_pitch);
-        //TestVariable = true;
+        
         get_stabilize_roll(nav_roll);
         get_stabilize_pitch(nav_pitch);
         break;
