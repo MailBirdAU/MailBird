@@ -18,8 +18,8 @@ uint8_t *dataptr = &data;
 AP_HAL::Semaphore*  _i2c_sem;
 
 #define WII_CAMERA_PORT 0x58            //i2C address of Wii camera ( = 0xB0 >> 1 to convert twi to i2c?)
-#define TARGET_MAX_WIDTH 200  	        //width of IR blobs on IR target in mm
-#define TARGET_MIN_WIDTH 10    	        //width of IR blobs on IR target in mm
+#define TARGET_MAX_WIDTH 20  	        //width of IR blobs on IR target in cm
+#define TARGET_MIN_WIDTH 1     	        //width of IR blobs on IR target in cm
 #define CAMERA_YAW 0	          		//rotation of the camera sensor from aircraft body in degrees
 
 // Real world parameters
