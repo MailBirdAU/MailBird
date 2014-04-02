@@ -273,7 +273,7 @@ void AC_WPNav::update_loiter()
         _loiter_step = 0;
     }
     
-    reset_I();
+    //reset_I();
 
     // reset step back to 0 if 0.1 seconds has passed and we completed the last full cycle
     if (dt > 0.095f && _loiter_step > 3) {

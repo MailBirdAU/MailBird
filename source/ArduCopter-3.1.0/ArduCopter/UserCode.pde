@@ -6,6 +6,12 @@ void userhook_init()
     // put your initialisation code here
     // this will be called once at start-up
     ircam.init();
+    hal.gpio->analogPinToDigitalPin(57);
+    hal.gpio->pinMode(57,1);
+    hal.gpio->analogPinToDigitalPin(55);
+    hal.gpio->pinMode(55,1);
+    hal.gpio->analogPinToDigitalPin(56);
+    hal.gpio->pinMode(56,1);
 }
 #endif
 
@@ -27,7 +33,7 @@ void userhook_50Hz()
 void userhook_MediumLoop()
 {
     // put your 10Hz code here
-    if (ircam.blobcount==2)
+    if (enab)//ircam.blobcount==2 ||)
         wp_nav.update_loiter();
 }
 #endif
@@ -48,6 +54,8 @@ void userhook_SlowLoop()
 
 	if (ircam.blobcount==2)
 	{
+	    hal.gpio->write(57,1);
+	
         // CALCULATIONS
 	    distance = safe_sqrt((ircam.Blob[0].X-ircam.Blob[1].X)*(ircam.Blob[0].X-ircam.Blob[1].X)
 	                       + (ircam.Blob[0].Y-ircam.Blob[1].Y)*(ircam.Blob[0].Y-ircam.Blob[1].Y));  // Calculate the number of pixels between the two IR targets
@@ -67,8 +75,18 @@ void userhook_SlowLoop()
 	    hal.console->printf_P(PSTR("XError: %d\n"),(int)WiiDisplacementX);
 	    hal.console->printf_P(PSTR("YError: %d\n"),(int)WiiDisplacementY);
 	    
-	    wp_nav.set_dist_error_x(WiiDisplacementX);
-		wp_nav.set_dist_error_y(WiiDisplacementY);
+	    wp_nav.set_dist_error_x((-1)*WiiDisplacementX);
+		wp_nav.set_dist_error_y((-1)*WiiDisplacementY);
+		
+		if(WiiDisplacementX <= 5 && WiiDisplacementX >= -5)
+		   hal.gpio->write(55,1);
+		else
+		   hal.gpio->write(55,0);
+		   
+		if(WiiDisplacementY <= 5 && WiiDisplacementY >= -5)   
+	       hal.gpio->write(56,1);
+	    else
+	       hal.gpio->write(56,0);
 
 	    //
 	                       //WiiRange = HeightAGL/10.0;
@@ -76,6 +94,9 @@ void userhook_SlowLoop()
 	}
 	else
 	{
+	    hal.gpio->write(57,0);
+	    wp_nav.set_dist_error_x(0);
+        wp_nav.set_dist_error_y(0);
 	    WiiRange = 0;
 	    WiiRotation = 0;
     }

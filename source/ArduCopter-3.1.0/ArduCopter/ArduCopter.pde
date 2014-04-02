@@ -1,8 +1,9 @@
 /// -*- tab-width: 4; Mode: C++; c-basic-offset: 4; indent-tabs-mode: nil -*-
 
-#define THISFIRMWARE "ArduCopter V3.1"
+#define THISFIRMWARE "ArduCopter V3.1 IR_LAND"
 #define IR_ENABLED   1
 #define IR_DISABLED  0
+
 /*
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -757,6 +758,7 @@ static int16_t event_repeat;
 static int16_t event_value;
 // the stored value used to undo commands - such as original PWM command
 static int16_t event_undo_value;
+int enab;
 
 ////////////////////////////////////////////////////////////////////////////////
 // Delay Mission Scripting Command
@@ -1599,6 +1601,7 @@ bool set_roll_pitch_mode(uint8_t new_roll_pitch_mode)
     switch( new_roll_pitch_mode ) {
         case ROLL_PITCH_STABLE:
             wp_nav.set_ir_enabled(IR_DISABLED);
+            enab = IR_DISABLED;
             roll_pitch_initialised = true;
             break;
         case ROLL_PITCH_ACRO:
@@ -1606,6 +1609,7 @@ bool set_roll_pitch_mode(uint8_t new_roll_pitch_mode)
             acro_roll_rate = 0;
             acro_pitch_rate = 0;
             wp_nav.set_ir_enabled(IR_DISABLED);
+            enab = IR_DISABLED;
             roll_pitch_initialised = true;
             break;
         case ROLL_PITCH_AUTO:
@@ -1613,6 +1617,7 @@ bool set_roll_pitch_mode(uint8_t new_roll_pitch_mode)
         case ROLL_PITCH_DRIFT:
         case ROLL_PITCH_SPORT:
             wp_nav.set_ir_enabled(IR_DISABLED);
+            enab = IR_DISABLED;
             roll_pitch_initialised = true;
             break;
 
@@ -1620,6 +1625,7 @@ bool set_roll_pitch_mode(uint8_t new_roll_pitch_mode)
             // require gps lock
             if( ap.home_is_set ) {
                wp_nav.set_ir_enabled(IR_DISABLED);
+               enab = IR_DISABLED;
                roll_pitch_initialised = true;
             }
             break;
@@ -1629,6 +1635,7 @@ bool set_roll_pitch_mode(uint8_t new_roll_pitch_mode)
             //if(wp_nav.get_IR_lock())
                hal.console->printf_P(PSTR("IR_ENABLED"));
                wp_nav.set_ir_enabled(IR_ENABLED);
+               enab = IR_ENABLED;
                roll_pitch_initialised = true;
             break;
             

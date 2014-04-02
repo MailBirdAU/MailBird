@@ -550,7 +550,7 @@
 
 // Acro Mode
 #ifndef ACRO_YAW
- # define ACRO_YAW           	    YAW_ACRO
+ # define ACRO_YAW           	    YAW_HOLD
 #endif
 
 #ifndef ACRO_RP
@@ -558,7 +558,7 @@
 #endif
 
 #ifndef ACRO_THR
- # define ACRO_THR           	    THROTTLE_MANUAL
+ # define ACRO_THR           	    THROTTLE_HOLD
 #endif
 
 #ifndef ACRO_LEVEL_MAX_ANGLE
