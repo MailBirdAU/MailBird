@@ -347,7 +347,7 @@ static bool set_mode(uint8_t mode)
             set_yaw_mode(ACRO_YAW);
             set_roll_pitch_mode(ACRO_RP);
             set_throttle_mode(ACRO_THR);
-            set_nav_mode(NAV_NONE);
+            set_nav_mode(NAV_LOITER);
             break;
 
         case STABILIZE:
